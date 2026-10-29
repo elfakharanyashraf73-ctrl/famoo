@@ -1,0 +1,204 @@
+  final Item item;
+  final data;
+
+
+
+
+
+
+
+
+
+
+  GlobalKey<FormState> _formKey = GlobalKey();
+ Item get itemm => widget.item;
+  Map r = {
+    "name": "",
+    "phone number": "",
+    "note": null,
+    "date": null,
+    "img": null,
+  };
+  bool t = false;
+
+  Map<dynamic, dynamic> get rcmap => {
+    'dateController': TextEditingController(text:"${itemm.date.year}/${itemm.date.month}/${itemm.date.day}" ),
+    'nameController': TextEditingController(text: itemm.name),
+    'foneController': TextEditingController(text: itemm.fonenumber),
+    'noteController': TextEditingController(text: itemm.note),
+  };
+  void istext (){
+    fav=widget.item.isfav;
+
+    if(widget.item.img!=null){
+     
+      setState(() {
+         r['img']=widget.item.img;
+        t=true;
+      });
+    }else{}
+
+  }
+  //------------------imagepic--------------------------
+ImagePicker imgpicker = ImagePicker();
+  Future uploadimg() async {
+    final pickedimg = await imgpicker.pickImage(source: ImageSource.gallery);
+    if (pickedimg != null) {
+      setState(() {
+        r['img'] = XFile(pickedimg.path);
+         t = true;
+      });
+     
+    } else {}
+  }
+  //------------------imagepic--------------------------
+  @override
+  void initState(){
+istext();
+super.initState();
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    fav = false;
+  }
+
+
+
+
+
+  
+ InkWell(
+                      onTap: () async {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          try {
+                            setState(() {
+                              widget.item.name = r['name'];
+                              widget.item.fonenumber = r['phone number'];
+                              widget.item.img = r['img'];
+                              widget.item.isfav = fav;
+                              widget.item.note = r['note'];
+                              widget.item.date = r['date'];
+                              // widget.item.clothesItem =
+                              switch (widget.item.type) {
+                                case 'dress':
+                                  widget.item.clothesItem = Dress(
+                                    bustCirc: dress['Bust circ']!,
+                                    waistCirc: dress['Waist circ']!,
+                                    hipCirc: dress['Hip circ']!,
+                                    frontLength: dress['Front length']!,
+                                    backLength: dress['Back length']!,
+                                    bustHeight: dress['Bust height']!,
+                                    bustDistance: dress['Bust distance']!,
+                                    hipHeight: dress['Hip height']!,
+                                    shoulderWidth: dress['Shoulder width']!,
+                                    backWidth: dress['Back width']!,
+                                    sleevesLength: dress['Sleeves length']!,
+                                    wristCirc: dress['Wrist circ']!,
+                                    muscleCirc: dress['Muscle circ']!,
+                                    kneeLength: dress['Knee length']!,
+                                    dressLength: dress['Dress length']!,
+                                    height: dress['Height']!,
+                                  );
+                                  break;
+                                case 'jacket':
+                                  widget.item.clothesItem = Jacket(
+                                    bustCirc: jacket['Bust circ']!,
+                                    waistCirc: jacket['Waist circ']!,
+                                    hipCirc: jacket['Hip circ']!,
+                                    frontLength: jacket['Front length']!,
+                                    backLength: jacket['Back length']!,
+                                    bustHeight: jacket['Bust height']!,
+                                    bustDistance: jacket['Bust distance']!,
+                                    hipHeight: jacket['Hip height']!,
+                                    shoulderWidth: jacket['Shoulder width']!,
+                                    backWidth: jacket['Back width']!,
+                                    sleevesLength: jacket['Sleeves length']!,
+                                    wristCirc: jacket['Wrist circ']!,
+                                    muscleCirc: jacket['Muscle circ']!,
+                                    jacketLength: jacket['Jacket length']!,
+                                    height: jacket['Height']!,
+                                  );
+                                  break;
+                                case 'pants':
+                                  widget.item.clothesItem = Pants(
+                                    waistCirc: pants['Waist circ']!,
+                                    hipCirc: pants['Hip circ']!,
+                                    hipHeight: pants['Hip height']!,
+                                    crotchHeight: pants['Crotch height']!,
+                                    kneeLength: pants['Knee length']!,
+                                    pantsLength: pants['Pants length']!,
+                                    height: pants['Height']!,
+                                  );
+                                  break;
+                              }
+                            });
+
+                            sortItems(clothesItems);
+                            await LocalStorageService.instance.saveItems(
+                              clothesItems,
+                              (item) => item.toMap(),
+                            );
+                        
+                            Navigator.of(context).pop();
+                            //------------------------------------------------------
+                          } catch (e) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Error'),
+                                  content: Text(
+                                    '''Please enter valid numbers for all fields.
+
+ERORR: $e''',
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text('Close'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                          //------------------------------------------------------
+                        }
+                      },
+
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFFC5A059),
+                          border: Border.all(
+                            width: 1.5,
+                            color: Color(0xFFE8D5B7),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0x5aC5A059),
+                              offset: Offset(2, 5),
+                              blurRadius: 5,
+                            ),
+                          ],
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        alignment: Alignment.center,
+
+                        height: 50,
+                        width: 110,
+
+                        child: Text(
+                          'Save',
+                          style: TextStyle(
+                            color: Color(0xFFFFFFFF),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ),
+
+
